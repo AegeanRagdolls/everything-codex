@@ -1,0 +1,23 @@
+interface:
+  display_name: "MCP Server Patterns"
+  short_description: "Build MCP servers with Node/TypeScript SDK — tools, resources, prompts, Zod validation, stdio vs Streamable HTTP. Use Context7 or official MCP..."
+  default_prompt: "Use the mcp-server-patterns skill to handle this task. Inspect relevant local files first, use mock or dry-run mode for external integrations, and report missing dependencies explicitly."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: "runtime"
+      value: "node"
+      description: "Required only for workflows that invoke local node tooling."
+    - type: "mcp"
+      value: "exa"
+      description: "Required only when running real exa MCP-backed workflows."
+    - type: "mcp"
+      value: "context7"
+      description: "Required only when running real context7 MCP-backed workflows."
+    - type: "env"
+      value: "EXA_API_KEY"
+      description: "Required only for real EXA_API_KEY integration tests; not used by mock smoke tests."
+    - type: "env"
+      value: "GITHUB_TOKEN"
+      description: "Required only for real GITHUB_TOKEN integration tests; not used by mock smoke tests."

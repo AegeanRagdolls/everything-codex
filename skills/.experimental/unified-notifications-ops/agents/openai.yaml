@@ -1,0 +1,17 @@
+interface:
+  display_name: "Unified Notifications Ops"
+  short_description: "Operate notifications as one ECC-native workflow across GitHub, Linear, desktop alerts, hooks, and connected communication surfaces. Use when the..."
+  default_prompt: "Use the unified-notifications-ops skill to handle this task. Inspect relevant local files first, use mock or dry-run mode for external integrations, and report missing dependencies explicitly."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "exa"
+      description: "Required only when running real exa MCP-backed workflows."
+    - type: "env"
+      value: "EXA_API_KEY"
+      description: "Required only for real EXA_API_KEY integration tests; not used by mock smoke tests."
+    - type: "env"
+      value: "GITHUB_TOKEN"
+      description: "Required only for real GITHUB_TOKEN integration tests; not used by mock smoke tests."

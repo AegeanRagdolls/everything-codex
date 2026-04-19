@@ -1,0 +1,11 @@
+interface:
+  display_name: "Hookify Rules"
+  short_description: "This skill should be used when the user asks to create a hookify rule, write a hook rule, configure hookify, add a hookify rule, or needs guidance..."
+  default_prompt: "Use the hookify-rules skill to handle this task. Inspect relevant local files first, use mock or dry-run mode for external integrations, and report missing dependencies explicitly."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: "runtime"
+      value: "python"
+      description: "Required only for workflows that invoke local python tooling."

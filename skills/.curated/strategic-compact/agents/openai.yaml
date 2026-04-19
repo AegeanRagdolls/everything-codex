@@ -1,0 +1,11 @@
+interface:
+  display_name: "Strategic Compact"
+  short_description: "Suggests manual context compaction at logical intervals to preserve context through task phases rather than arbitrary auto-compaction. Use when..."
+  default_prompt: "Use the strategic-compact skill to handle this task. Inspect relevant local files first, use mock or dry-run mode for external integrations, and report missing dependencies explicitly."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: "runtime"
+      value: "node"
+      description: "Required only for workflows that invoke local node tooling."

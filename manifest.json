@@ -1,0 +1,14 @@
+{
+  "name": "everything-codex-code",
+  "source": "affaan-m/everything-claude-code",
+  "version": "1.10.0-codex.2",
+  "counts": {
+    "curated_skills": 34,
+    "repo_scoped_curated_skills": 34,
+    "experimental_skills": 150,
+    "total_skills": 184,
+    "prompt_recipes": 79,
+    "agent_playbooks": 48,
+    "active_codex_roles": 8
+  }
+}

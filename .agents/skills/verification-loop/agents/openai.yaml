@@ -1,0 +1,14 @@
+interface:
+  display_name: "Verification Loop"
+  short_description: "A comprehensive verification system for Claude Code sessions. Use when Codex needs support for: A comprehensive verification system for Claude..."
+  default_prompt: "Use the verification-loop skill to handle this task. Inspect relevant local files first, use mock or dry-run mode for external integrations, and report missing dependencies explicitly."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: "runtime"
+      value: "node"
+      description: "Required only for workflows that invoke local node tooling."
+    - type: "runtime"
+      value: "python"
+      description: "Required only for workflows that invoke local python tooling."

@@ -1,0 +1,20 @@
+interface:
+  display_name: "Token Budget Advisor"
+  short_description: ">- Offers the user an informed choice about how much response depth to consume before answering. Use this skill when the user explicitly wants to..."
+  default_prompt: "Use the token-budget-advisor skill to handle this task. Inspect relevant local files first, use mock or dry-run mode for external integrations, and report missing dependencies explicitly."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: "runtime"
+      value: "python"
+      description: "Required only for workflows that invoke local python tooling."
+    - type: "mcp"
+      value: "exa"
+      description: "Required only when running real exa MCP-backed workflows."
+    - type: "env"
+      value: "EXA_API_KEY"
+      description: "Required only for real EXA_API_KEY integration tests; not used by mock smoke tests."
+    - type: "env"
+      value: "GITHUB_TOKEN"
+      description: "Required only for real GITHUB_TOKEN integration tests; not used by mock smoke tests."

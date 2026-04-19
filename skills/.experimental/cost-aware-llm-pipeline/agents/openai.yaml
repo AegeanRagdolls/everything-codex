@@ -1,0 +1,17 @@
+interface:
+  display_name: "Cost Aware Llm Pipeline"
+  short_description: "Cost optimization patterns for LLM API usage — model routing by task complexity, budget tracking, retry logic, and prompt caching. Use when Codex..."
+  default_prompt: "Use the cost-aware-llm-pipeline skill to handle this task. Inspect relevant local files first, use mock or dry-run mode for external integrations, and report missing dependencies explicitly."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: "runtime"
+      value: "python"
+      description: "Required only for workflows that invoke local python tooling."
+    - type: "env"
+      value: "ANTHROPIC_API_KEY"
+      description: "Required only for real ANTHROPIC_API_KEY integration tests; not used by mock smoke tests."
+    - type: "env"
+      value: "OPENAI_API_KEY"
+      description: "Required only for real OPENAI_API_KEY integration tests; not used by mock smoke tests."

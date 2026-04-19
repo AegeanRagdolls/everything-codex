@@ -1,0 +1,23 @@
+interface:
+  display_name: "Prompt Optimizer"
+  short_description: ">- Analyze raw prompts, identify intent and gaps, match ECC components (skills/commands/agents/hooks), and output a ready-to-paste optimized..."
+  default_prompt: "Use the prompt-optimizer skill to handle this task. Inspect relevant local files first, use mock or dry-run mode for external integrations, and report missing dependencies explicitly."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: "runtime"
+      value: "node"
+      description: "Required only for workflows that invoke local node tooling."
+    - type: "runtime"
+      value: "python"
+      description: "Required only for workflows that invoke local python tooling."
+    - type: "runtime"
+      value: "browser"
+      description: "Required only for workflows that invoke local browser tooling."
+    - type: "mcp"
+      value: "exa"
+      description: "Required only when running real exa MCP-backed workflows."
+    - type: "env"
+      value: "EXA_API_KEY"
+      description: "Required only for real EXA_API_KEY integration tests; not used by mock smoke tests."

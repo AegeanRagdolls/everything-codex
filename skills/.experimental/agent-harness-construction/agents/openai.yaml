@@ -1,0 +1,9 @@
+interface:
+  display_name: "Agent Harness Construction"
+  short_description: "Design and optimize AI agent action spaces, tool definitions, and observation formatting for higher completion rates. Use when Codex needs support..."
+  default_prompt: "Use the agent-harness-construction skill to handle this task. Inspect relevant local files first, use mock or dry-run mode for external integrations, and report missing dependencies explicitly."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    []

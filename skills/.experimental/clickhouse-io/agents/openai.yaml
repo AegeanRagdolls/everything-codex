@@ -1,0 +1,11 @@
+interface:
+  display_name: "Clickhouse Io"
+  short_description: "ClickHouse database patterns, query optimization, analytics, and data engineering best practices for high-performance analytical workloads. Use..."
+  default_prompt: "Use the clickhouse-io skill to handle this task. Inspect relevant local files first, use mock or dry-run mode for external integrations, and report missing dependencies explicitly."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: "runtime"
+      value: "node"
+      description: "Required only for workflows that invoke local node tooling."

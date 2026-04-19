@@ -1,0 +1,17 @@
+interface:
+  display_name: "Context Budget"
+  short_description: "Audits Claude Code context window consumption across agents, skills, MCP servers, and rules. Identifies bloat, redundant components, and produces..."
+  default_prompt: "Use the context-budget skill to handle this task. Inspect relevant local files first, use mock or dry-run mode for external integrations, and report missing dependencies explicitly."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: "runtime"
+      value: "node"
+      description: "Required only for workflows that invoke local node tooling."
+    - type: "mcp"
+      value: "exa"
+      description: "Required only when running real exa MCP-backed workflows."
+    - type: "env"
+      value: "EXA_API_KEY"
+      description: "Required only for real EXA_API_KEY integration tests; not used by mock smoke tests."

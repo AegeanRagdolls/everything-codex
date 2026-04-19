@@ -1,0 +1,14 @@
+interface:
+  display_name: "Browser Qa"
+  short_description: "Use this skill to automate visual testing and UI interaction verification using browser automation after deploying features. Use when Codex needs..."
+  default_prompt: "Use the browser-qa skill to handle this task. Inspect relevant local files first, use mock or dry-run mode for external integrations, and report missing dependencies explicitly."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: "runtime"
+      value: "node"
+      description: "Required only for workflows that invoke local node tooling."
+    - type: "runtime"
+      value: "browser"
+      description: "Required only for workflows that invoke local browser tooling."

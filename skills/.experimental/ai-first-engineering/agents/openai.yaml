@@ -1,0 +1,9 @@
+interface:
+  display_name: "Ai First Engineering"
+  short_description: "Engineering operating model for teams where AI agents generate a large share of implementation output. Use when Codex needs support for:..."
+  default_prompt: "Use the ai-first-engineering skill to handle this task. Inspect relevant local files first, use mock or dry-run mode for external integrations, and report missing dependencies explicitly."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    []

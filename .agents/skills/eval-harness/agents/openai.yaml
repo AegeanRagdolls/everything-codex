@@ -1,0 +1,17 @@
+interface:
+  display_name: "Eval Harness"
+  short_description: "Formal evaluation framework for Claude Code sessions implementing eval-driven development (EDD) principles. Use when Codex needs support for:..."
+  default_prompt: "Use the eval-harness skill to handle this task. Inspect relevant local files first, use mock or dry-run mode for external integrations, and report missing dependencies explicitly."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: "runtime"
+      value: "node"
+      description: "Required only for workflows that invoke local node tooling."
+    - type: "mcp"
+      value: "exa"
+      description: "Required only when running real exa MCP-backed workflows."
+    - type: "env"
+      value: "EXA_API_KEY"
+      description: "Required only for real EXA_API_KEY integration tests; not used by mock smoke tests."

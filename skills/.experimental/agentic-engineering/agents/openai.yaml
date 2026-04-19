@@ -1,0 +1,9 @@
+interface:
+  display_name: "Agentic Engineering"
+  short_description: "Operate as an agentic engineer using eval-first execution, decomposition, and cost- aware model routing. Use when Codex needs support for: Operate..."
+  default_prompt: "Use the agentic-engineering skill to handle this task. Inspect relevant local files first, use mock or dry-run mode for external integrations, and report missing dependencies explicitly."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    []

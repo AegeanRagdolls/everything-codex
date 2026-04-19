@@ -1,0 +1,9 @@
+interface:
+  display_name: "Frontend Design"
+  short_description: "Create distinctive, production-grade frontend interfaces with high design quality. Use when the user asks to build web components, pages, or..."
+  default_prompt: "Use the frontend-design skill to handle this task. Inspect relevant local files first, use mock or dry-run mode for external integrations, and report missing dependencies explicitly."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    []

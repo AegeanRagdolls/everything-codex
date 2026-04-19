@@ -1,0 +1,9 @@
+interface:
+  display_name: "Swift Actor Persistence"
+  short_description: "Thread-safe data persistence in Swift using actors — in-memory cache with file-backed storage, eliminating data races by design. Use when Codex..."
+  default_prompt: "Use the swift-actor-persistence skill to handle this task. Inspect relevant local files first, use mock or dry-run mode for external integrations, and report missing dependencies explicitly."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    []

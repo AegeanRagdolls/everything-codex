@@ -1,0 +1,9 @@
+interface:
+  display_name: "Dotnet Patterns"
+  short_description: "Idiomatic C# and .NET patterns, conventions, dependency injection, async/await, and best practices for building robust, maintainable .NET..."
+  default_prompt: "Use the dotnet-patterns skill to handle this task. Inspect relevant local files first, use mock or dry-run mode for external integrations, and report missing dependencies explicitly."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    []

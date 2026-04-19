@@ -1,0 +1,23 @@
+interface:
+  display_name: "Agent Eval"
+  short_description: "Head-to-head comparison of coding agents (Claude Code, Aider, Codex, etc.) on custom tasks with pass rate, cost, time, and consistency metrics...."
+  default_prompt: "Use the agent-eval skill to handle this task. Inspect relevant local files first, use mock or dry-run mode for external integrations, and report missing dependencies explicitly."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: "runtime"
+      value: "node"
+      description: "Required only for workflows that invoke local node tooling."
+    - type: "runtime"
+      value: "python"
+      description: "Required only for workflows that invoke local python tooling."
+    - type: "mcp"
+      value: "exa"
+      description: "Required only when running real exa MCP-backed workflows."
+    - type: "env"
+      value: "EXA_API_KEY"
+      description: "Required only for real EXA_API_KEY integration tests; not used by mock smoke tests."
+    - type: "env"
+      value: "GITHUB_TOKEN"
+      description: "Required only for real GITHUB_TOKEN integration tests; not used by mock smoke tests."

@@ -1,0 +1,9 @@
+interface:
+  display_name: "Liquid Glass Design"
+  short_description: "iOS 26 Liquid Glass design system — dynamic glass material with blur, reflection, and interactive morphing for SwiftUI, UIKit, and WidgetKit. Use..."
+  default_prompt: "Use the liquid-glass-design skill to handle this task. Inspect relevant local files first, use mock or dry-run mode for external integrations, and report missing dependencies explicitly."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    []

@@ -1,0 +1,9 @@
+interface:
+  display_name: "Swiftui Patterns"
+  short_description: "SwiftUI architecture patterns, state management with @Observable, view composition, navigation, performance optimization, and modern iOS/macOS UI..."
+  default_prompt: "Use the swiftui-patterns skill to handle this task. Inspect relevant local files first, use mock or dry-run mode for external integrations, and report missing dependencies explicitly."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    []

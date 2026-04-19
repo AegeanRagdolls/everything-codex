@@ -1,0 +1,11 @@
+interface:
+  display_name: "Ralphinho Rfc Pipeline"
+  short_description: "RFC-driven multi-agent DAG execution pattern with quality gates, merge queues, and work unit orchestration. Use when Codex needs support for:..."
+  default_prompt: "Use the ralphinho-rfc-pipeline skill to handle this task. Inspect relevant local files first, use mock or dry-run mode for external integrations, and report missing dependencies explicitly."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: "env"
+      value: "GITHUB_TOKEN"
+      description: "Required only for real GITHUB_TOKEN integration tests; not used by mock smoke tests."

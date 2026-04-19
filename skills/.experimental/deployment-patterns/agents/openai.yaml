@@ -1,0 +1,23 @@
+interface:
+  display_name: "Deployment Patterns"
+  short_description: "Deployment workflows, CI/CD pipeline patterns, Docker containerization, health checks, rollback strategies, and production readiness checklists..."
+  default_prompt: "Use the deployment-patterns skill to handle this task. Inspect relevant local files first, use mock or dry-run mode for external integrations, and report missing dependencies explicitly."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: "runtime"
+      value: "node"
+      description: "Required only for workflows that invoke local node tooling."
+    - type: "runtime"
+      value: "bun"
+      description: "Required only for workflows that invoke local bun tooling."
+    - type: "runtime"
+      value: "python"
+      description: "Required only for workflows that invoke local python tooling."
+    - type: "runtime"
+      value: "browser"
+      description: "Required only for workflows that invoke local browser tooling."
+    - type: "env"
+      value: "GITHUB_TOKEN"
+      description: "Required only for real GITHUB_TOKEN integration tests; not used by mock smoke tests."

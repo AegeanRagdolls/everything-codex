@@ -1,0 +1,9 @@
+interface:
+  display_name: "Foundation Models On Device"
+  short_description: "Apple FoundationModels framework for on-device LLM — text generation, guided generation with @Generable, tool calling, and snapshot streaming in..."
+  default_prompt: "Use the foundation-models-on-device skill to handle this task. Inspect relevant local files first, use mock or dry-run mode for external integrations, and report missing dependencies explicitly."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    []

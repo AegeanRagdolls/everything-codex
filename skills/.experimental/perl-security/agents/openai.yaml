@@ -1,0 +1,14 @@
+interface:
+  display_name: "Perl Security"
+  short_description: "Comprehensive Perl security covering taint mode, input validation, safe process execution, DBI parameterized queries, web security..."
+  default_prompt: "Use the perl-security skill to handle this task. Inspect relevant local files first, use mock or dry-run mode for external integrations, and report missing dependencies explicitly."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "exa"
+      description: "Required only when running real exa MCP-backed workflows."
+    - type: "env"
+      value: "EXA_API_KEY"
+      description: "Required only for real EXA_API_KEY integration tests; not used by mock smoke tests."

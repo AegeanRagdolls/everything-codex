@@ -1,0 +1,9 @@
+interface:
+  display_name: "Rust Patterns"
+  short_description: "Idiomatic Rust patterns, ownership, error handling, traits, concurrency, and best practices for building safe, performant applications. Use when..."
+  default_prompt: "Use the rust-patterns skill to handle this task. Inspect relevant local files first, use mock or dry-run mode for external integrations, and report missing dependencies explicitly."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    []

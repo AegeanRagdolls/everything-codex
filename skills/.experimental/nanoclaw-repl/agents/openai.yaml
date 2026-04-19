@@ -1,0 +1,9 @@
+interface:
+  display_name: "Nanoclaw Repl"
+  short_description: "Operate and extend NanoClaw v2, ECC's zero-dependency session-aware REPL built on claude -p. Use when Codex needs support for: Operate and extend..."
+  default_prompt: "Use the nanoclaw-repl skill to handle this task. Inspect relevant local files first, use mock or dry-run mode for external integrations, and report missing dependencies explicitly."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    []

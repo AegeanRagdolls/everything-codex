@@ -1,0 +1,26 @@
+interface:
+  display_name: "Fal Ai Media"
+  short_description: "Unified media generation via fal.ai MCP — image, video, and audio. Covers text-to- image (Nano Banana), text/image-to-video (Seedance, Kling, Veo..."
+  default_prompt: "Use the fal-ai-media skill to handle this task. Inspect relevant local files first, use mock or dry-run mode for external integrations, and report missing dependencies explicitly."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: "runtime"
+      value: "node"
+      description: "Required only for workflows that invoke local node tooling."
+    - type: "runtime"
+      value: "python"
+      description: "Required only for workflows that invoke local python tooling."
+    - type: "runtime"
+      value: "ffmpeg"
+      description: "Required only for workflows that invoke local ffmpeg tooling."
+    - type: "runtime"
+      value: "browser"
+      description: "Required only for workflows that invoke local browser tooling."
+    - type: "api"
+      value: "fal.ai"
+      description: "Required only for real fal.ai API-backed workflows."
+    - type: "env"
+      value: "FAL_KEY"
+      description: "Required only for real FAL_KEY integration tests; not used by mock smoke tests."

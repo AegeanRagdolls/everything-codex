@@ -1,0 +1,101 @@
+# Everything Codex Code — project-local Codex baseline
+# Keep model/model_provider unset so Codex uses the current supported Codex default.
+
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+model_reasoning_effort = "medium"
+model_reasoning_summary = "auto"
+model_verbosity = "medium"
+
+developer_instructions = """
+Use this repository as a Codex-first skill and workflow catalog. Prefer installed skills over loading large prompt files. Never assume Claude-specific hooks, slash commands, or Task-tool subagents exist in Codex. For code changes: inspect first, make minimal diffs, run the relevant verification command, and report exact evidence.
+"""
+
+[features]
+child_agents_md = true
+multi_agent = true
+web_search_request = true
+skill_mcp_dependency_install = true
+skill_env_var_dependency_prompt = true
+
+[agents]
+max_threads = 2
+max_depth = 1
+job_max_runtime_seconds = 120
+
+[agents.planner]
+description = "Expert planning specialist for complex features and refactoring. Use PROACTIVELY when users request feature implementation, architectural changes, or complex refactoring. Automatically activated for planning tasks."
+config_file = "agents/planner.toml"
+
+[agents.explorer]
+description = "Deeply analyzes existing codebase features by tracing execution paths, mapping architecture layers, and documenting dependencies to inform new development. Use when Codex needs support for: Deeply analyzes existing codebase features by tracing execution paths, mapping architecture layers, and documenting dependencies to inform new development."
+config_file = "agents/explorer.toml"
+
+[agents.code_reviewer]
+description = "Expert code review specialist. Proactively reviews code for quality, security, and maintainability. Use immediately after writing or modifying code. MUST BE USED for all code changes."
+config_file = "agents/code_reviewer.toml"
+
+[agents.security_reviewer]
+description = "Security vulnerability detection and remediation specialist. Use PROACTIVELY after writing code that handles user input, authentication, API endpoints, or sensitive data. Flags secrets, SSRF, injection, unsafe crypto, and OWASP Top 10 vulnerabilities."
+config_file = "agents/security_reviewer.toml"
+
+[agents.test_runner]
+description = "Test-Driven Development specialist enforcing write-tests-first methodology. Use PROACTIVELY when writing new features, fixing bugs, or refactoring code. Ensures 80%+ test coverage."
+config_file = "agents/test_runner.toml"
+
+[agents.docs_researcher]
+description = "When the user asks how to use a library, framework, or API or needs up-to-date code examples, use Context7 MCP to fetch current documentation and return answers with examples. Invoke for docs/API/setup questions."
+config_file = "agents/docs_researcher.toml"
+
+[agents.build_fixer]
+description = "Build and TypeScript error resolution specialist. Use PROACTIVELY when build fails or type errors occur. Fixes build/type errors only with minimal diffs, no architectural edits. Focuses on getting the build green quickly."
+config_file = "agents/build_fixer.toml"
+
+[agents.refactor_cleaner]
+description = "Dead code cleanup and consolidation specialist. Use PROACTIVELY for removing unused code, duplicates, and refactoring. Runs analysis tools (knip, depcheck, ts-prune) to identify dead code and safely removes it."
+config_file = "agents/refactor_cleaner.toml"
+
+# Optional MCP defaults. They are disabled by default so first-run Codex startup does not depend on Node, network access, or API keys. Enable only the servers you actually use.
+[mcp_servers.github]
+enabled = false
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-github"]
+startup_timeout_sec = 30
+
+[mcp_servers.context7]
+enabled = false
+command = "npx"
+args = ["-y", "@upstash/context7-mcp@latest"]
+startup_timeout_sec = 30
+
+[mcp_servers.exa]
+enabled = false
+url = "https://mcp.exa.ai/mcp"
+
+[mcp_servers.memory]
+enabled = false
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-memory"]
+startup_timeout_sec = 30
+
+[mcp_servers.playwright]
+enabled = false
+command = "npx"
+args = ["-y", "@playwright/mcp@latest", "--extension"]
+startup_timeout_sec = 30
+
+[mcp_servers.sequential-thinking]
+enabled = false
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+startup_timeout_sec = 30
+
+[profiles.readonly]
+approval_policy = "untrusted"
+sandbox_mode = "read-only"
+model_reasoning_effort = "medium"
+
+[profiles.autonomous]
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+model_reasoning_effort = "high"

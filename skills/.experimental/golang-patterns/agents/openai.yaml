@@ -1,0 +1,9 @@
+interface:
+  display_name: "Golang Patterns"
+  short_description: "Idiomatic Go patterns, best practices, and conventions for building robust, efficient, and maintainable Go applications. Use when Codex needs..."
+  default_prompt: "Use the golang-patterns skill to handle this task. Inspect relevant local files first, use mock or dry-run mode for external integrations, and report missing dependencies explicitly."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    []

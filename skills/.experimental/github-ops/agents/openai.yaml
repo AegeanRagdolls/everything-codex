@@ -1,0 +1,11 @@
+interface:
+  display_name: "Github Ops"
+  short_description: "GitHub repository operations, automation, and management. Issue triage, PR management, CI/CD operations, release management, and security..."
+  default_prompt: "Use the github-ops skill to handle this task. Inspect relevant local files first, use mock or dry-run mode for external integrations, and report missing dependencies explicitly."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: "env"
+      value: "GITHUB_TOKEN"
+      description: "Required only for real GITHUB_TOKEN integration tests; not used by mock smoke tests."

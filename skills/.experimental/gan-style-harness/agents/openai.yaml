@@ -1,0 +1,23 @@
+interface:
+  display_name: "Gan Style Harness"
+  short_description: "GAN-inspired Generator-Evaluator agent harness for building high-quality applications autonomously. Based on Anthropic's March 2026 harness design..."
+  default_prompt: "Use the gan-style-harness skill to handle this task. Inspect relevant local files first, use mock or dry-run mode for external integrations, and report missing dependencies explicitly."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: "runtime"
+      value: "node"
+      description: "Required only for workflows that invoke local node tooling."
+    - type: "runtime"
+      value: "python"
+      description: "Required only for workflows that invoke local python tooling."
+    - type: "runtime"
+      value: "browser"
+      description: "Required only for workflows that invoke local browser tooling."
+    - type: "env"
+      value: "ANTHROPIC_API_KEY"
+      description: "Required only for real ANTHROPIC_API_KEY integration tests; not used by mock smoke tests."
+    - type: "env"
+      value: "OPENAI_API_KEY"
+      description: "Required only for real OPENAI_API_KEY integration tests; not used by mock smoke tests."

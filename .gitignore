@@ -1,0 +1,53 @@
+# Local environment files
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Python caches and virtual environments
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+.venv/
+venv/
+env/
+ENV/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Node dependencies and package-manager caches
+node_modules/
+.npm/
+.pnpm-store/
+.yarn/
+coverage/
+
+# Build and release artifacts
+dist/
+build/
+out/
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+
+# Codex local test sandboxes and generated reports
+.codex-test/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+Thumbs.db
+.DS_Store
+
+# Editor and OS metadata
+.idea/
+.vscode/

@@ -1,0 +1,9 @@
+interface:
+  display_name: "Investor Outreach"
+  short_description: "Draft cold emails, warm intro blurbs, follow-ups, update emails, and investor communications for fundraising. Use when the user wants outreach to..."
+  default_prompt: "Use the investor-outreach skill to handle this task. Inspect relevant local files first, use mock or dry-run mode for external integrations, and report missing dependencies explicitly."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    []

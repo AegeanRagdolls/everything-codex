@@ -1,0 +1,17 @@
+interface:
+  display_name: "Design System"
+  short_description: "Use this skill to generate or audit design systems, check visual consistency, and review PRs that touch styling. Use when Codex needs support for:..."
+  default_prompt: "Use the design-system skill to handle this task. Inspect relevant local files first, use mock or dry-run mode for external integrations, and report missing dependencies explicitly."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: "runtime"
+      value: "browser"
+      description: "Required only for workflows that invoke local browser tooling."
+    - type: "mcp"
+      value: "exa"
+      description: "Required only when running real exa MCP-backed workflows."
+    - type: "env"
+      value: "EXA_API_KEY"
+      description: "Required only for real EXA_API_KEY integration tests; not used by mock smoke tests."

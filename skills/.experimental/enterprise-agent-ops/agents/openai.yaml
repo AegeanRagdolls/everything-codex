@@ -1,0 +1,9 @@
+interface:
+  display_name: "Enterprise Agent Ops"
+  short_description: "Operate long-lived agent workloads with observability, security boundaries, and lifecycle management. Use when Codex needs support for: Operate..."
+  default_prompt: "Use the enterprise-agent-ops skill to handle this task. Inspect relevant local files first, use mock or dry-run mode for external integrations, and report missing dependencies explicitly."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    []
