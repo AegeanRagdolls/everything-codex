@@ -73,6 +73,15 @@ Use the code-review prompt recipe on my current local changes.
 Use the build-fix prompt recipe and fix one error at a time.
 ```
 
+## Multica
+
+If you want to use this package as the Codex capability layer behind a Multica agent team, start here:
+
+- Chinese operator manual: [docs/multica-codex-usage-manual.md](/mnt/c/Users/oream/Desktop/everything-codex-code/docs/multica-codex-usage-manual.md)
+- Bootstrap reference: [docs/multica-codex-team-bootstrap.md](/mnt/c/Users/oream/Desktop/everything-codex-code/docs/multica-codex-team-bootstrap.md)
+
+The current recommended deployment is `multica` + `codex` inside Ubuntu on WSL2, with Windows login auto-starting the WSL-hosted Multica daemon.
+
 ## Contents
 
 - Curated skills: **34**
