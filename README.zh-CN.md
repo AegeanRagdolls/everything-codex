@@ -14,8 +14,8 @@
 ## 推荐安装
 
 ```bash
-unzip everything-codex-code-v2.zip
-cd everything-codex-code
+git clone https://github.com/AegeanRagdolls/everything-codex.git
+cd everything-codex
 python3 -S scripts/validate_codex_package.py
 ./scripts/install-codex.sh --core
 ```
@@ -46,8 +46,8 @@ Use the code-review prompt recipe on my current changes.
 
 如果你要把这个仓库当成 **Multica 多 Agent 协作团队的 Codex 能力层**，直接从这两份文档开始：
 
-- 完整中文使用手册：[docs/multica-codex-usage-manual.md](/mnt/c/Users/oream/Desktop/everything-codex-code/docs/multica-codex-usage-manual.md)
-- Bootstrap 参数说明：[docs/multica-codex-team-bootstrap.md](/mnt/c/Users/oream/Desktop/everything-codex-code/docs/multica-codex-team-bootstrap.md)
+- 完整中文使用手册：[docs/multica-codex-usage-manual.md](docs/multica-codex-usage-manual.md)
+- Bootstrap 参数说明：[docs/multica-codex-team-bootstrap.md](docs/multica-codex-team-bootstrap.md)
 
 当前推荐部署方式是：在 **WSL2 Ubuntu** 里运行 `multica` 和 `codex`，由 Windows 登录自动拉起 WSL 内的 `multica daemon`。
 
@@ -56,7 +56,7 @@ Use the code-review prompt recipe on my current changes.
 如果只是想确认 Codex 能不能看到仓库级技能：
 
 ```bash
-cd everything-codex-code
+cd everything-codex
 codex
 ```
 

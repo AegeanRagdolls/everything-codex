@@ -79,13 +79,27 @@ class MulticaCodexBootstrapTests(unittest.TestCase):
             "--audit-language",
             "--manual-review-gate",
             "--install-windows-autostart",
+            "--capability-pack-source",
         )
 
-    def test_missing_project_path_fails(self) -> None:
+    def test_project_path_is_optional_for_team_bootstrap(self) -> None:
         result = self.run_bootstrap("--dry-run")
 
+        self.assertEqual(result.returncode, 0, self.combined_output(result))
+        self.assertOutputContainsAll(
+            result,
+            "optional bound project path",
+            "未绑定",
+            "https://github.com/AegeanRagdolls/everything-codex",
+            "Next test command",
+            "<target-project-path>",
+        )
+
+    def test_smoke_issue_requires_explicit_project_path(self) -> None:
+        result = self.run_bootstrap("--dry-run", "--create-smoke-issue")
+
         self.assertNotEqual(result.returncode, 0, self.combined_output(result))
-        self.assertOutputContainsAll(result, "project", "path")
+        self.assertOutputContainsAll(result, "--create-smoke-issue", "explicit project path")
 
     def test_dry_run_prints_install_command_and_agent_team_plan(self) -> None:
         result = self.run_bootstrap("--dry-run", str(self.project))
@@ -98,6 +112,7 @@ class MulticaCodexBootstrapTests(unittest.TestCase):
             "--core",
             "multica",
             "team",
+            "capability pack source",
             "简体中文",
             "move issues to done",
             *CORE_AGENTS,
@@ -125,8 +140,12 @@ class MulticaCodexBootstrapTests(unittest.TestCase):
         self.assertIn("对模糊需求、新产品想法", script)
         self.assertIn("只能发布需求澄清评论", script)
         self.assertIn("不创建开发、测试、审查或集成子 issue", script)
-        self.assertIn("不得把默认绑定项目路径或 Codex 能力包路径自动当成新产品的目标代码仓库", script)
+        self.assertIn("不得把可选绑定项目路径、Codex 能力包来源或能力包本地安装目录自动当成新产品的目标代码仓库", script)
+        self.assertIn("Codex capability pack source", script)
         self.assertIn("只有用户明确确认范围并要求", script)
+        self.assertIn("不运行 \\`pwd\\`、\\`rg --files\\`、\\`git status\\`、\\`ls\\` 等仓库探测命令", script)
+        self.assertIn("用户追加复杂产品设想时，先做追问/需求再收敛", script)
+        self.assertIn("如果目标路径缺失，停止并回报 blocker", script)
 
     def run_bootstrap(self, *args: str) -> subprocess.CompletedProcess[str]:
         env = os.environ.copy()

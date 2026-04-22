@@ -27,8 +27,8 @@ python scripts\install-codex.py --core
 macOS/Linux recommended path:
 
 ```bash
-unzip everything-codex-code-v2.zip
-cd everything-codex-code
+git clone https://github.com/AegeanRagdolls/everything-codex.git
+cd everything-codex
 python3 -S scripts/validate_codex_package.py
 python3 scripts/install-codex.py --core
 ```
@@ -77,8 +77,8 @@ Use the build-fix prompt recipe and fix one error at a time.
 
 If you want to use this package as the Codex capability layer behind a Multica agent team, start here:
 
-- Chinese operator manual: [docs/multica-codex-usage-manual.md](/mnt/c/Users/oream/Desktop/everything-codex-code/docs/multica-codex-usage-manual.md)
-- Bootstrap reference: [docs/multica-codex-team-bootstrap.md](/mnt/c/Users/oream/Desktop/everything-codex-code/docs/multica-codex-team-bootstrap.md)
+- Chinese operator manual: [docs/multica-codex-usage-manual.md](docs/multica-codex-usage-manual.md)
+- Bootstrap reference: [docs/multica-codex-team-bootstrap.md](docs/multica-codex-team-bootstrap.md)
 
 The current recommended deployment is `multica` + `codex` inside Ubuntu on WSL2, with Windows login auto-starting the WSL-hosted Multica daemon.
 

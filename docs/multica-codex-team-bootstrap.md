@@ -7,18 +7,23 @@
 - 所有可审计的人类可读内容默认使用简体中文。
 - 模糊新产品需求先进入需求澄清；在用户明确确认范围和执行意图前，不创建 Dev/Test/Review/集成子 issue。
 - `everything-codex-code` 是 Codex 能力包来源，不会被自动当成用户新产品的目标代码仓库。
+- 能力包默认来源记录为 `https://github.com/AegeanRagdolls/everything-codex`；本地 clone 到哪里不写入 Multica 作为业务项目路径。
+- 没有目标项目路径或 Gitea 仓库时，PM 只读取 Multica issue/comment，不做本地仓库探测。
+- 用户追加复杂产品设想时，PM 先追问并更新 PRD/MVP/路线图，不把追问当作开发授权。
 - 当实现、测试、审查证据齐全且没有 blocker 时，issue 自动推进到 `done`，不会长期停在 `in_review`。
 - 在 WSL 环境下可以额外安装 Windows 登录任务，自动拉起 Ubuntu 里的 Multica daemon。
 
 ## 一键部署
 
 ```bash
-cd /mnt/c/Users/oream/Desktop/everything-codex-code
+git clone https://github.com/AegeanRagdolls/everything-codex.git
+cd everything-codex
 
 scripts/bootstrap-multica-codex-team.sh \
-  --create-smoke-issue \
-  /mnt/c/Users/oream/Desktop/everything-codex-code
+  --skip-codex-install
 ```
+
+上面这条命令只创建或更新 Multica AgentTeam 和 orchestration skill，不绑定任何业务项目路径。等用户明确要对某个项目开发时，再在 issue 里给出目标项目路径或 Gitea 仓库。
 
 新电脑上先确保 `codex`、`multica`、`python3` 可用，并运行过：
 
@@ -39,8 +44,7 @@ scripts/install-windows-wsl-multica-autostart.sh --run-now
 ```bash
 scripts/bootstrap-multica-codex-team.sh \
   --dry-run \
-  --create-smoke-issue \
-  /path/to/project
+  --skip-codex-install
 ```
 
 如果要在 bootstrap 时顺手安装 Windows 登录自启动：
@@ -56,7 +60,7 @@ scripts/bootstrap-multica-codex-team.sh \
 
 默认创建或更新：
 
-- `ECC PM`：产品经理和调度 Agent。
+- `产品经理 / 项目调度`：产品经理和调度 Agent。
 - `ECC Dev 1`、`ECC Dev 2`：并行编码 worker。
 - `ECC Tester`：独立验证 Agent。
 - `ECC Reviewer`：独立代码审查 Agent。
@@ -68,12 +72,14 @@ scripts/bootstrap-multica-codex-team.sh \
 
 ## 工作模型
 
-Multica workspace 是平台任务空间，不是本地文件夹。脚本把本地项目路径写入 Agent instructions，Codex worker 只有在用户确认任务确实面向该项目时才进入该路径工作。对“我想做一个 App”这类模糊需求，PM 应先回到用户沟通和需求冻结，不应因为能力包路径存在就启动团队并行执行。
+Multica workspace 是平台任务空间，不是本地文件夹。脚本只在你显式传入 `project-path` 时，把它作为“可选绑定项目路径”写入 Agent instructions；Codex worker 只有在用户确认任务确实面向该项目时才进入该路径工作。对“我想做一个 App”这类模糊需求，PM 应先回到用户沟通和需求冻结，不应因为能力包路径存在就启动团队并行执行。只要 issue 里没有目标项目路径或 Gitea 仓库，PM 不应运行 `pwd`、`rg --files`、`git status`、`ls` 等仓库探测命令。
+
+如果 bootstrap 时不传 `project-path`，Agent instructions 会显示“可选绑定项目路径：未绑定”。这适合把能力包部署成可移植团队规则，让每个真实开发任务在 Multica issue 里显式声明目标项目。
 
 编码任务必须异步且隔离：
 
 ```text
-用户 -> ECC PM -> Multica issues -> ECC Dev/Test/Review agents -> Codex runtime -> git worktree
+用户 -> 产品经理 / 项目调度 -> Multica issues -> ECC Dev/Test/Review agents -> Codex runtime -> git worktree
 ```
 
 编码 worker 必须在独立 git worktree 中修改代码。Tester 和 Reviewer 独立验证后，PM 负责汇总并推进合并或收口状态。默认情况下，证据齐全的子任务会被关闭到 `done`；只有等待人工审批或存在未解决问题时才停在 `in_review`。
@@ -101,6 +107,7 @@ scripts/bootstrap-multica-codex-team.sh \
   --tester-agent-name "QA" \
   --reviewer-agent-name "Review" \
   --audit-language "简体中文" \
+  --capability-pack-source "https://github.com/AegeanRagdolls/everything-codex" \
   --create-smoke-issue \
   /path/to/project
 ```

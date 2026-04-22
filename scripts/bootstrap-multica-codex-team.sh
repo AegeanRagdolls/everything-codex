@@ -9,7 +9,9 @@ SKIP_CODEX_INSTALL=0
 INSTALL_WINDOWS_AUTOSTART=0
 WORKSPACE_ID="${MULTICA_WORKSPACE_ID:-}"
 PROJECT_PATH=""
-PM_AGENT_NAME="ECC PM"
+BOUND_PROJECT_LABEL="未绑定"
+CAPABILITY_PACK_SOURCE="${CODEX_CAPABILITY_PACK_SOURCE:-https://github.com/AegeanRagdolls/everything-codex}"
+PM_AGENT_NAME="产品经理 / 项目调度"
 DEV_AGENT_PREFIX="ECC Dev"
 DEV_AGENT_COUNT=2
 TESTER_AGENT_NAME="ECC Tester"
@@ -36,9 +38,13 @@ CORE_CODEX_AGENTS=(
 
 usage() {
   cat <<'USAGE'
-Usage: scripts/bootstrap-multica-codex-team.sh [options] <project-path>
+Usage: scripts/bootstrap-multica-codex-team.sh [options] [project-path]
 
-Bootstrap a reproducible Multica + Codex agent team for one local project path.
+Bootstrap a reproducible Multica + Codex agent team.
+
+project-path is optional. Pass it only when this team should be bound to a
+specific local business repository. The Codex capability pack can live at any
+local clone path and is identified in Multica by source URL, not machine path.
 
 Options:
   --dry-run                     Print the plan and commands without mutating Multica.
@@ -46,7 +52,7 @@ Options:
   --skip-codex-install          Skip installing this repo's Codex skills and core agents.
   --install-windows-autostart   Install a Windows logon task that starts the WSL-hosted Multica daemon.
   --workspace-id ID             Multica workspace ID. Defaults to MULTICA_WORKSPACE_ID or current CLI context.
-  --pm-agent-name NAME          Product manager agent name. Default: ECC PM.
+  --pm-agent-name NAME          Product manager agent name. Default: 产品经理 / 项目调度.
   --dev-agent-prefix NAME       Prefix for coding workers. Default: ECC Dev.
   --dev-agent-count N           Number of coding workers. Default: 2.
   --tester-agent-name NAME      Tester agent name. Default: ECC Tester.
@@ -56,12 +62,14 @@ Options:
   --audit-language LANG         Human audit language. Default: 简体中文.
   --manual-review-gate          Keep completed work in review until a human closes it.
   --skill-name NAME             Multica orchestration skill name.
+  --capability-pack-source URL  Capability pack source shown in Multica. Default: https://github.com/AegeanRagdolls/everything-codex.
   --codex-home PATH             Codex config home. Default: ~/.codex.
   --skills-home PATH            Codex user skills directory. Default: ~/.agents/skills.
   -h, --help                    Show this help.
 
 The Multica workspace is a platform workspace, not a local folder. The project
-path is written into agent instructions so Codex-backed agents know where to work.
+path is written into agent instructions only when explicitly provided. New
+product ideas still need a target path or Gitea repo before coding agents work.
 USAGE
 }
 
@@ -239,6 +247,7 @@ parse_args() {
       --audit-language) AUDIT_LANGUAGE="$2"; shift 2 ;;
       --manual-review-gate) MANUAL_REVIEW_GATE=1; shift ;;
       --skill-name) SKILL_NAME="$2"; shift 2 ;;
+      --capability-pack-source) CAPABILITY_PACK_SOURCE="$2"; shift 2 ;;
       --codex-home) CODEX_HOME="$2"; shift 2 ;;
       --skills-home) SKILLS_HOME="$2"; shift 2 ;;
       -h|--help) usage; exit 0 ;;
@@ -255,15 +264,23 @@ parse_args() {
 }
 
 normalize_project_path() {
-  [[ -n "$PROJECT_PATH" ]] || die "project path is required"
+  if [[ -z "$PROJECT_PATH" ]]; then
+    BOUND_PROJECT_LABEL="未绑定"
+    return
+  fi
   [[ -d "$PROJECT_PATH" ]] || die "project path does not exist: $PROJECT_PATH"
   PROJECT_PATH="$(cd "$PROJECT_PATH" && pwd)"
+  BOUND_PROJECT_LABEL="$PROJECT_PATH"
 }
 
 validate_inputs() {
   [[ "$DEV_AGENT_COUNT" =~ ^[0-9]+$ ]] || die "--dev-agent-count must be an integer"
   (( DEV_AGENT_COUNT >= 1 )) || die "--dev-agent-count must be at least 1"
   [[ -n "$AUDIT_LANGUAGE" ]] || die "--audit-language must not be empty"
+  [[ -n "$CAPABILITY_PACK_SOURCE" ]] || die "--capability-pack-source must not be empty"
+  if [[ "$CREATE_SMOKE_ISSUE" == "1" && -z "$PROJECT_PATH" ]]; then
+    die "--create-smoke-issue requires an explicit project path"
+  fi
 }
 
 workspace_flags() {
@@ -325,7 +342,8 @@ ensure_daemon_running() {
 print_team_plan() {
   log "Multica Codex team plan:"
   log "  workspace: ${WORKSPACE_ID:-current Multica workspace}"
-  log "  project path: $PROJECT_PATH"
+  log "  optional bound project path: $BOUND_PROJECT_LABEL"
+  log "  capability pack source: $CAPABILITY_PACK_SOURCE"
   log "  PM agent: $PM_AGENT_NAME"
   local i
   for (( i = 1; i <= DEV_AGENT_COUNT; i++ )); do
@@ -394,23 +412,42 @@ skill_content() {
 
 ## 项目路径与能力包边界
 
-- Bound project path: \`$PROJECT_PATH\`
+- Optional bound project path: \`$BOUND_PROJECT_LABEL\`
 - Multica workspace: platform task space, not a filesystem folder.
-- Codex capability pack: installed from \`$ROOT\`.
+- Codex capability pack source: \`$CAPABILITY_PACK_SOURCE\`
 - Human audit language: \`$AUDIT_LANGUAGE\`
 
-\`$PROJECT_PATH\` 是当前团队在用户明确指定“对这个项目执行工作”时使用的默认代码目录。
-\`$ROOT\` 是 Codex 能力包来源。不得把 \`$PROJECT_PATH\` 或 \`$ROOT\` 自动推断为新产品想法的目标仓库。
+可选绑定项目路径只在用户明确指定“这次工作面向该项目”时作为代码目录。
+Codex 能力包只提供 skills、agents 和团队规则。不得把可选绑定项目路径、能力包来源或能力包本地安装目录自动推断为新产品想法的目标仓库。
 
 ## 协作模型
 
 1. PM Agent 先判断用户是在提出模糊新需求、要求计划拆解、还是明确要求执行开发。
 2. 对模糊需求、新产品想法、未确认目标项目路径、未确认验收标准的请求，PM 只能发布需求澄清评论，不创建开发、测试、审查或集成子 issue。
-3. 只有在用户明确确认范围并表达“开始拆任务 / 开始开发 / 安排团队执行 / 创建子任务”等执行意图后，PM 才能创建规划、实现、测试、审查和集成类 Multica issue。
-4. 实现类 issue 必须使用 \`--assignee "${DEV_AGENT_PREFIX} <n>"\`。
-5. 测试类 issue 必须使用 \`--assignee "$TESTER_AGENT_NAME"\`。
-6. 审查类 issue 必须使用 \`--assignee "$REVIEWER_AGENT_NAME"\`。
-7. 所有完成结论都必须有命令证据。没有命令、结果和观察，不得宣称完成。
+3. 对复杂追加需求，PM 先进入追问/需求再收敛，更新 PRD/MVP/路线图，不直接派发开发。
+4. 只有在用户明确确认范围并表达“开始拆任务 / 开始开发 / 安排团队执行 / 创建子任务”等执行意图后，PM 才能创建规划、实现、测试、审查和集成类 Multica issue。
+5. 实现类 issue 必须使用 \`--assignee "${DEV_AGENT_PREFIX} <n>"\`。
+6. 测试类 issue 必须使用 \`--assignee "$TESTER_AGENT_NAME"\`。
+7. 审查类 issue 必须使用 \`--assignee "$REVIEWER_AGENT_NAME"\`。
+8. 所有完成结论都必须有命令证据。没有命令、结果和观察，不得宣称完成。
+
+## 无目标仓库阶段
+
+- PM 可以使用 Superpowers、brainstorming、product-capability 等技能作为思考纪律。
+- 在没有目标项目路径或 Gitea 仓库前，只读取 Multica issue、评论和已绑定的团队规则。
+- 不运行 \`pwd\`、\`rg --files\`、\`git status\`、\`ls\` 等仓库探测命令来寻找项目上下文。
+- 不进入 Codex 能力包目录或可选绑定项目路径做产品仓库分析，除非用户明确说本任务就是修改该路径。
+- 规划材料可以直接回到 Multica 评论；不要为了满足设计流程写入代码仓库或提交文件。
+
+## 用户追问与需求再收敛
+
+当用户追加新的产品设想，例如导入学习资料、电子书式阅读、圈词翻译、生词库、卡牌滑动复习、AI 例句/语义判断、AI 对话练习、记忆曲线等，PM 必须：
+
+1. 先判断这是范围扩展，不是执行授权。
+2. 用中文总结新增能力和影响的模块。
+3. 提出少量关键追问，优先确认一期/二期边界、离线/云端、AI 成本与隐私、内容来源和验收方式。
+4. 在用户确认前，不创建 Dev/Test/Review 子 issue。
+5. 需要时输出更新版 PRD/MVP/路线图，并标明哪些进入 MVP、哪些进入后续阶段。
 
 示例命令：
 
@@ -452,7 +489,7 @@ multica issue create --parent "<parent-id>" --title "审查：<切片>" --assign
 不要在同一个 checkout 里并行执行两个编码任务。推荐：
 
 \`\`\`bash
-cd "$PROJECT_PATH"
+cd "<目标项目路径>"
 mkdir -p .worktrees/multica
 git worktree add ".worktrees/multica/<issue-slug>" -b "codex/<issue-slug>"
 \`\`\`
@@ -493,15 +530,17 @@ pm_instructions() {
   cat <<EOF
 你是 Codex 驱动的 Multica 协作团队里的产品经理和调度 Agent。
 
-默认绑定项目路径：$PROJECT_PATH
-Codex 能力包路径：$ROOT
+可选绑定项目路径：$BOUND_PROJECT_LABEL
+Codex 能力包来源：$CAPABILITY_PACK_SOURCE
 
 硬性入口规则：
 1. 如果用户提出的是模糊新产品想法、需求探索、产品策划、技术路线咨询，或者没有明确目标仓库/目标项目路径，你只能先做需求澄清。
 2. 需求澄清阶段只允许发布中文评论，提出少量关键问题、整理已知范围和待确认决策；不得创建 Dev/Test/Review/集成子 issue。
-3. 不得把默认绑定项目路径或 Codex 能力包路径自动当成新产品的目标代码仓库。
-4. 只有用户明确确认范围并要求“开始拆任务 / 开始开发 / 安排团队执行 / 创建子任务 / 进入实现”后，才允许创建子 issue 和分配 Agent。
-5. 如果用户没有给目标项目路径，必须先询问目标路径或说明需要新建项目目录；不得自行把 $PROJECT_PATH 用作新产品仓库。
+3. 用户追加复杂产品设想时，先做追问/需求再收敛，更新 PRD/MVP/路线图；不得把追加需求当成开始开发。
+4. 不得把可选绑定项目路径、Codex 能力包来源或能力包本地安装目录自动当成新产品的目标代码仓库。
+5. 只有用户明确确认范围并要求“开始拆任务 / 开始开发 / 安排团队执行 / 创建子任务 / 进入实现”后，才允许创建子 issue 和分配 Agent。
+6. 如果用户没有给目标项目路径，必须先询问目标路径或说明需要新建项目目录；不得自行把可选绑定项目路径用作新产品仓库。
+7. 无目标项目路径或 Gitea 仓库时，你可以使用 Superpowers、brainstorming、product-capability 作为思考纪律，但只读 Multica issue/comment，不运行 pwd、rg --files、git status、ls 等仓库探测命令，不写本地设计文件，不提交代码仓库。
 
 你的职责：
 1. 与用户确认目标、约束、验收标准和风险。
@@ -517,7 +556,7 @@ Codex 能力包路径：$ROOT
 $(pm_completion_block)
 11. 只有在等待人工审批、仍有缺陷或验证未通过时，才允许停在 \`in_review\`。
 
-使用 Multica skill "$SKILL_NAME" 作为团队操作规范。把 Multica workspace 视为任务控制台；只有在用户确认该任务确实面向默认绑定项目时，才把默认绑定项目路径视为 Codex worker 实际工作的文件系统目录。
+使用 Multica skill "$SKILL_NAME" 作为团队操作规范。把 Multica workspace 视为任务控制台；只有在用户确认该任务确实面向可选绑定项目时，才把该路径视为 Codex worker 实际工作的文件系统目录。
 EOF
 }
 
@@ -526,17 +565,19 @@ dev_instructions() {
   cat <<EOF
 你是 $worker_name，一个由 Multica 调度的 Codex 编码 Agent。
 
-目标项目路径：$PROJECT_PATH
+可选绑定项目路径：$BOUND_PROJECT_LABEL
 
 规则：
-1. 每个任务开始时都先进入目标项目路径，并阅读适用的 AGENTS.md。
-2. 修改代码前，先创建或进入该 issue 专属 git worktree。
-3. 不要在同一个 checkout 里并行执行多个编码任务。
-4. 优先使用本能力包里的 Codex skills：planner、explorer、tdd-workflow、verification-loop、build_fixer、code_reviewer、security-review。
-5. 对功能或 bugfix，能测试先行就测试先行。
-6. 变更范围严格限制在当前被分配 issue 内。
-7. 汇报完成前先运行相关验证。
-8. 汇报内容默认使用 $AUDIT_LANGUAGE，并包含分支、worktree 路径、变更文件、命令、结果和 blocker。
+1. 目标项目路径或 Gitea 仓库必须来自当前 issue 描述、父 issue 描述或用户评论。
+2. 如果目标路径缺失，停止并回报 blocker，不得自行进入可选绑定项目路径或 Codex 能力包本地安装目录开发。
+3. 每个任务开始时都先进入目标项目路径，并阅读适用的 AGENTS.md。
+4. 修改代码前，先创建或进入该 issue 专属 git worktree。
+5. 不要在同一个 checkout 里并行执行多个编码任务。
+6. 优先使用本能力包里的 Codex skills：planner、explorer、tdd-workflow、verification-loop、build_fixer、code_reviewer、security-review。
+7. 对功能或 bugfix，能测试先行就测试先行。
+8. 变更范围严格限制在当前被分配 issue 内。
+9. 汇报完成前先运行相关验证。
+10. 汇报内容默认使用 $AUDIT_LANGUAGE，并包含目标路径、分支、worktree 路径、变更文件、命令、结果和 blocker。
 
 除非 issue 明确要求你在测试和审查通过后执行集成，否则不要把变更合回主 checkout。
 EOF
@@ -546,7 +587,9 @@ tester_instructions() {
   cat <<EOF
 你是 Codex 驱动 Multica 团队的独立测试 Agent。
 
-目标项目路径：$PROJECT_PATH
+可选绑定项目路径：$BOUND_PROJECT_LABEL
+
+目标项目路径或 Gitea 仓库必须来自当前 issue 描述、父 issue 描述或用户评论。如果目标路径缺失，回报 blocker，不得自行测试可选绑定项目路径或 Codex 能力包本地安装目录。
 
 独立验证实现任务，优先使用只读检查。运行相关 build、validation、lint、test、smoke 或 CLI 命令。合理时至少补一个对抗性探针，例如幂等性、缺失依赖或非法输入。所有汇报默认使用 $AUDIT_LANGUAGE，最后必须给出 PASS、FAIL 或 PARTIAL，并附上支撑结论的准确命令和观察结果。
 EOF
@@ -556,7 +599,9 @@ reviewer_instructions() {
   cat <<EOF
 你是 Codex 驱动 Multica 团队的独立审查 Agent。
 
-目标项目路径：$PROJECT_PATH
+可选绑定项目路径：$BOUND_PROJECT_LABEL
+
+目标项目路径或 Gitea 仓库必须来自当前 issue 描述、父 issue 描述或用户评论。如果目标路径缺失，回报 blocker，不得自行审查可选绑定项目路径或 Codex 能力包本地安装目录。
 
 检查 diff 的正确性、安全性、可维护性、测试缺口和集成风险。除非任务明确要求修复，否则保持只读。所有汇报默认使用 $AUDIT_LANGUAGE；发现按严重程度排序，并包含文件路径和行号。没有命令证据的工作，不得视为通过。
 EOF
@@ -622,9 +667,9 @@ ensure_project() {
   fi
   project_id="$(multica_capture project list --output json | json_find_project_id_by_title "$PROJECT_TITLE")"
   if [[ -n "$project_id" ]]; then
-    output="$(multica_capture project update "$project_id" --title "$PROJECT_TITLE" --description "$AUDIT_LANGUAGE 审计下的 Codex 驱动 Multica 协作 smoke 项目。目标路径：$PROJECT_PATH。" --lead "$PM_AGENT_NAME" --status planned --output json)"
+    output="$(multica_capture project update "$project_id" --title "$PROJECT_TITLE" --description "$AUDIT_LANGUAGE 审计下的 Codex 驱动 Multica 协作 smoke 项目。目标路径：$BOUND_PROJECT_LABEL。" --lead "$PM_AGENT_NAME" --status planned --output json)"
   else
-    output="$(multica_capture project create --title "$PROJECT_TITLE" --description "$AUDIT_LANGUAGE 审计下的 Codex 驱动 Multica 协作 smoke 项目。目标路径：$PROJECT_PATH。" --lead "$PM_AGENT_NAME" --status planned --output json)"
+    output="$(multica_capture project create --title "$PROJECT_TITLE" --description "$AUDIT_LANGUAGE 审计下的 Codex 驱动 Multica 协作 smoke 项目。目标路径：$BOUND_PROJECT_LABEL。" --lead "$PM_AGENT_NAME" --status planned --output json)"
   fi
   printf '%s\n' "$output" | json_first_field id
 }
@@ -643,7 +688,7 @@ create_smoke_issue() {
 $AUDIT_LANGUAGE 审计用的 Codex 驱动 Multica 协作链路 smoke 测试。
 
 目标项目路径：
-$PROJECT_PATH
+$BOUND_PROJECT_LABEL
 
 预期行为：
 1. PM 确认该 issue 能按团队规则正确路由。
@@ -725,8 +770,10 @@ main() {
   log "Bootstrap complete."
   if [[ "$CREATE_SMOKE_ISSUE" == "1" ]]; then
     log "Smoke issue requested: $SMOKE_ISSUE_TITLE"
-  else
+  elif [[ -n "$PROJECT_PATH" ]]; then
     log "Next test command: $0 --create-smoke-issue $(shell_quote "$PROJECT_PATH")"
+  else
+    log "Next test command: $0 --create-smoke-issue <target-project-path>"
   fi
 }
 
