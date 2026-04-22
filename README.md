@@ -1,4 +1,4 @@
-# Everything Codex Code
+# Everything Codex
 
 A Codex-first conversion of **Everything Claude Code**. This package keeps the useful ECC workflows, but exposes them in the way Codex expects:
 
