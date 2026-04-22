@@ -1,149 +1,79 @@
 ---
 name: frontend-design
-description: >-
-  Create distinctive, production-grade frontend interfaces with high design quality. Use
-  when the user asks to build web components, pages, or applications and the visual
-  direction matters as much as the code quality. Do not use for unrelated tasks. Inputs
-  should include relevant files, constraints, and available tools. Output should be a
-  concise plan, result, or verification summary.
+description: Create distinctive, production-grade frontend interfaces with high design quality. Use when Codex needs support for building web components, pages, artifacts, posters, applications, dashboards, prototypes, HTML/CSS layouts, or styling or improving any visual web UI. Do not use for unrelated backend, CLI, or data-processing tasks. Inputs should include relevant files, product context, design constraints, and available tools. Output should be polished code or a concise plan, result, and verification summary that avoids generic AI aesthetics while respecting existing product design systems.
 ---
 
 # Frontend Design
 
-Use this when the task is not just "make it work" but "make it look designed."
+Use this skill to create or improve web interfaces where visual quality, interaction design, and implementation polish matter. The goal is not just "works in the browser"; the goal is a coherent product experience that feels intentionally designed for its audience, domain, and constraints.
 
-This skill is for product pages, dashboards, app shells, components, or visual systems that need a clear point of view instead of generic AI-looking UI.
+## Operating Principles
 
-## When To Use
+- Start from context. Prefer the existing product code, design tokens, component library, screenshots, Figma context, brand guidelines, or reference surfaces over inventing a style from scratch.
+- Match the product's visual vocabulary before extending it: color ratios, density, radius, elevation, icon style, motion, copy tone, and component rhythm.
+- Avoid generic AI aesthetics: default blue buttons, purple/pink gradient wash, over-rounded cards, fake logo walls, fabricated testimonials, emoji-as-icons, vague "modern SaaS" layouts, and decorative effects that do not serve the product.
+- Make a strong design choice, but keep it appropriate. A financial dashboard, developer tool, museum landing page, mobile prototype, and slide deck should not share the same aesthetic.
+- Build real working UI. Include responsive behavior, interaction states, empty/error/loading states when relevant, and accessible focus treatment.
 
-- building a landing page, dashboard, or app surface from scratch
-- upgrading a bland interface into something intentional and memorable
-- translating a product concept into a concrete visual direction
-- implementing a frontend where typography, composition, and motion matter
+## Workflow
 
-## Core Principle
+1. Understand the job. Identify the audience, product context, output type, required interactions, target breakpoints, framework constraints, and any design system already in use.
+2. Gather design context. Read nearby UI code first when a repo exists. Use screenshots or references to extract tokens and behavior, not to copy blindly.
+3. Declare the design direction before substantial implementation. For non-trivial visual work, state the planned color system, typography, spacing, radius, elevation, motion, and asset approach in a short note so the user can correct the direction early.
+4. For high-risk or broad visual work, create a viewable v0 early. The v0 should show layout, tokens, key modules, and honest placeholders such as `[image]` or `[icon]`; it does not need every state or detail.
+5. Implement the full UI using the repo's patterns. Prefer existing components and CSS/token conventions. Add abstractions only when they reduce real duplication or align with the codebase.
+6. Verify in the browser or with the repo's frontend checks when available. For substantial UI work, inspect at desktop and mobile widths and fix visible overlap, overflow, blank canvases, broken assets, and console errors.
 
-Pick a direction and commit to it.
+## Design System Declaration
 
-Safe-average UI is usually worse than a strong, coherent aesthetic with a few bold choices.
+For new pages, redesigns, prototypes, and visually significant changes, define these choices before writing the main implementation:
 
-## Design Workflow
+```markdown
+Design direction:
+- Audience and tone:
+- Color system:
+- Typography:
+- Spacing and layout rhythm:
+- Radius and elevation:
+- Motion:
+- Imagery, iconography, and placeholders:
+- Responsive behavior:
+```
 
-### 1. Frame the interface first
+Keep this lightweight for small edits. If the repo already has a design system, summarize how the change follows it rather than creating a new one.
 
-Before coding, settle:
+## Color And Tokens
 
-- purpose
-- audience
-- emotional tone
-- visual direction
-- one thing the user should remember
+- Prefer CSS variables, Tailwind tokens, theme tokens, or the project's existing token system over one-off hex values.
+- OKLCH is useful for deriving perceptually consistent palettes. Use it when the target stack supports it or when the project already uses modern CSS color functions.
+- Avoid rogue hues. Once a palette is chosen, derive hover, border, muted, and emphasis colors from it instead of adding unrelated accents.
+- Do not force a trendy palette. A restrained, domain-appropriate system is better than a loud but generic one.
 
-Possible directions:
+## Typography
 
-- brutally minimal
-- editorial
-- industrial
-- luxury
-- playful
-- geometric
-- retro-futurist
-- soft and organic
-- maximalist
+- Prefer the product's existing font system. If no font direction exists, choose fonts for domain fit and hierarchy rather than defaulting to Inter, Roboto, Arial, or system fonts.
+- Pair a distinctive display face with a readable body face only when the product can support the extra asset and visual personality.
+- Keep type scales stable across responsive breakpoints. Do not use viewport-width font scaling for normal UI text.
 
-Do not mix directions casually. Choose one and execute it cleanly.
+## Placeholders And Data
 
-### 2. Build the visual system
+- Do not fabricate customer logos, testimonials, metrics, awards, or user data unless the user explicitly asks for fictional content.
+- Use honest placeholders for missing media or unknown assets, then structure the UI so real assets can be dropped in later.
+- Prefer real product state examples from the repo or user-provided material when demonstrating UI states.
 
-Define:
+## Visual QA Checklist
 
-- type hierarchy
-- color variables
-- spacing rhythm
-- layout logic
-- motion rules
-- surface / border / shadow treatment
+Before delivery, check the relevant items:
 
-Use CSS variables or the project's token system so the interface stays coherent as it grows.
+- The UI renders correctly at the requested viewports, including mobile when applicable.
+- Text does not overlap, clip, or overflow its container.
+- Interactive elements have hover, focus, active, disabled, loading, and error states where the workflow needs them.
+- Colors come from the declared or existing design system.
+- Visual assets load and are not stretched, blurred, or cropped in a way that hides the subject.
+- Layout dimensions are stable for fixed-format elements such as boards, toolbars, tiles, counters, slide stages, and device frames.
+- The browser console has no relevant errors or warnings.
+- The final result avoids generic AI design cliches and fits the product's actual domain.
 
-### 3. Compose with intention
+## Reference
 
-Prefer:
-
-- asymmetry when it sharpens hierarchy
-- overlap when it creates depth
-- strong whitespace when it clarifies focus
-- dense layouts only when the product benefits from density
-
-Avoid defaulting to a symmetrical card grid unless it is clearly the right fit.
-
-### 4. Make motion meaningful
-
-Use animation to:
-
-- reveal hierarchy
-- stage information
-- reinforce user action
-- create one or two memorable moments
-
-Do not scatter generic micro-interactions everywhere. One well-directed load sequence is usually stronger than twenty random hover effects.
-
-## Strong Defaults
-
-### Typography
-
-- pick fonts with character
-- pair a distinctive display face with a readable body face when appropriate
-- avoid generic defaults when the page is design-led
-
-### Color
-
-- commit to a clear palette
-- one dominant field with selective accents usually works better than evenly weighted rainbow palettes
-- avoid cliché purple-gradient-on-white unless the product genuinely calls for it
-
-### Background
-
-Use atmosphere:
-
-- gradients
-- meshes
-- textures
-- subtle noise
-- patterns
-- layered transparency
-
-Flat empty backgrounds are rarely the best answer for a product-facing page.
-
-### Layout
-
-- break the grid when the composition benefits from it
-- use diagonals, offsets, and grouping intentionally
-- keep reading flow obvious even when the layout is unconventional
-
-## Anti-Patterns
-
-Never default to:
-
-- interchangeable SaaS hero sections
-- generic card piles with no hierarchy
-- random accent colors without a system
-- placeholder-feeling typography
-- motion that exists only because animation was easy to add
-
-## Execution Rules
-
-- preserve the established design system when working inside an existing product
-- match technical complexity to the visual idea
-- keep accessibility and responsiveness intact
-- frontends should feel deliberate on desktop and mobile
-
-## Quality Gate
-
-Before delivering:
-
-- the interface has a clear visual point of view
-- typography and spacing feel intentional
-- color and motion support the product instead of decorating it randomly
-- the result does not read like generic AI UI
-- the implementation is production-grade, not just visually interesting
+For broad visual frontend work, high-risk redesigns, landing pages, dashboards, prototypes, slide-like HTML artifacts, or UI polish passes where the aesthetic direction matters, also consult `references/web-design-quality.md`. It adds Claude Design-inspired guidance adapted for Codex: design-context gathering, lightweight design-system declaration, v0 draft strategy, OKLCH/token guidance, anti-cliche checks, placeholder rules, and a visual delivery checklist.
