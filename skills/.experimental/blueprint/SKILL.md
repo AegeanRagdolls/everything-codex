@@ -1,19 +1,13 @@
 ---
 name: blueprint
 description: >-
-  >- Turn a one-line objective into a step-by-step construction plan for multi-session,
-  multi-agent engineering projects. Each step has a self-contained context brief so a
-  fresh agent can execute it cold. Includes adversarial review gate, dependency graph,
-  parallel step detection, anti-pattern catalog, and plan mutation protocol. TRIGGER
-  when: user requests a plan, blueprint, or roadmap for a complex multi-PR task, or
-  describes work that needs multiple sessions. DO NOT TRIGGER when: task is completable
-  in a single PR or fewer than 3 tool calls, or user says "just do it". Use when Codex
-  needs support for: >- Turn a one-line objective into a step-by-step construction plan
-  for multi-session, multi-agent engineering projects. Each step has a self-contained
-  context brief so a fresh agent can execute it cold. Includes adversarial review gate,
-  dependency graph, parallel step detection, anti-pa... Do not use for unrelated tasks.
-  Inputs should include relevant files, constraints, and available tools. Output should
-  be a concise plan, result, or verification summary.
+  Turn a one-line objective into a step-by-step construction plan for complex,
+  multi-session engineering work. Use for roadmaps, multi-PR plans, dependency
+  graphs, parallel step detection, adversarial review gates, and self-contained
+  execution briefs when Codex needs support for multi-agent planning. Do not use
+  for small tasks that fit in one PR or a few tool calls. Inputs should include
+  goals, constraints, repository context, and available tools. Output should be
+  a concise plan, result, or verification summary.
 ---
 
 # Blueprint — Construction Plan Generator

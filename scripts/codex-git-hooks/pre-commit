@@ -51,7 +51,7 @@ while IFS= read -r file; do
       ;;
   esac
 
-  scan_added_lines "$file" "OpenAI key" 'sk-[A-Za-z0-9]{20,}'
+  scan_added_lines "$file" "OpenAI key" 'sk-[A-Za-z0-9_-]{20,}'
   scan_added_lines "$file" "GitHub classic token" 'ghp_[A-Za-z0-9]{36}'
   scan_added_lines "$file" "GitHub fine-grained token" 'github_pat_[A-Za-z0-9_]{20,}'
   scan_added_lines "$file" "AWS access key" 'AKIA[0-9A-Z]{16}'

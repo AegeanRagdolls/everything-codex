@@ -6,22 +6,38 @@ sandbox_mode = "workspace-write"
 model_reasoning_effort = "medium"
 model_reasoning_summary = "auto"
 model_verbosity = "medium"
+web_search = "live"
 
 developer_instructions = """
-Use this repository as a Codex-first skill and workflow catalog. Prefer installed skills over loading large prompt files. Never assume Claude-specific hooks, slash commands, or Task-tool subagents exist in Codex. For code changes: inspect first, make minimal diffs, run the relevant verification command, and report exact evidence.
+Use this repository as a Codex-first skill and workflow catalog. Prefer installed
+skills over loading large prompt files. Never assume Claude-specific hooks, slash
+commands, or Task-tool subagents exist in Codex.
+
+Default to multi-subagent collaboration for non-trivial tasks when the runtime
+supports subagents. Classify the task and compose the smallest useful Agent Team:
+planner/explorer for planning and architecture, explorer for codebase tracing,
+docs_researcher for current docs, test_runner for code changes, build_fixer for
+failing checks, code_reviewer after modifications, security_reviewer for
+security-sensitive surfaces, and refactor_cleaner for cleanup. If subagents are
+unavailable, execute these roles sequentially in the main session.
+
+For code changes, use TDD by default: add or update the smallest targeted test,
+run it and observe the red failure, then implement production code, then rerun
+the targeted test and relevant broader checks. If a red test is not feasible,
+state the concrete blocker before changing production code.
 """
 
 [features]
 child_agents_md = true
 multi_agent = true
-web_search_request = true
+codex_hooks = true
 skill_mcp_dependency_install = true
 skill_env_var_dependency_prompt = true
 
 [agents]
-max_threads = 2
+max_threads = 4
 max_depth = 1
-job_max_runtime_seconds = 120
+job_max_runtime_seconds = 180
 
 [agents.planner]
 description = "Expert planning specialist for complex features and refactoring. Use PROACTIVELY when users request feature implementation, architectural changes, or complex refactoring. Automatically activated for planning tasks."
@@ -40,7 +56,7 @@ description = "Security vulnerability detection and remediation specialist. Use 
 config_file = "agents/security_reviewer.toml"
 
 [agents.test_runner]
-description = "Test-Driven Development specialist enforcing write-tests-first methodology. Use PROACTIVELY when writing new features, fixing bugs, or refactoring code. Ensures 80%+ test coverage."
+description = "TDD and verification specialist. Use first for code changes to create or identify the red failing test before implementation."
 config_file = "agents/test_runner.toml"
 
 [agents.docs_researcher]

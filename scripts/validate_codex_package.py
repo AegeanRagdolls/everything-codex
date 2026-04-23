@@ -119,12 +119,12 @@ def main() -> int:
     try:
         config = tomllib.loads((ROOT / ".codex" / "config.toml").read_text(encoding="utf-8"))
         agents_config = config.get("agents", {})
-        if agents_config.get("max_threads") != 2:
-            failures.append(".codex/config.toml agents.max_threads must be 2")
+        if agents_config.get("max_threads") != 4:
+            failures.append(".codex/config.toml agents.max_threads must be 4")
         if agents_config.get("max_depth") != 1:
             failures.append(".codex/config.toml agents.max_depth must be 1")
-        if agents_config.get("job_max_runtime_seconds") != 120:
-            failures.append(".codex/config.toml agents.job_max_runtime_seconds must be 120")
+        if agents_config.get("job_max_runtime_seconds") != 180:
+            failures.append(".codex/config.toml agents.job_max_runtime_seconds must be 180")
     except Exception as exc:
         failures.append(f".codex/config.toml TOML parse failed: {exc}")
 
